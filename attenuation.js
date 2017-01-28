@@ -15,12 +15,11 @@ var tools = ["source", "receptor", "room", "none"];
 var currentTool = "none";
 var existingSource = false;
 var sourceStrength = 0;
-var source = [x:0, y:0];
 /**
 	Selects the signal's source (2.4GHz or 5.8GHz)
  */
 function selectSource() {
-	if(currentTool === tools[0]) && !existingSource) {
+	if(currentTool === tools[0] && !existingSource) {
 		currentTool = tools[0];
 		sourceStrength;
 		console.log("Current tool : source");
@@ -31,7 +30,7 @@ function selectSource() {
 	Places the source on the canvas
  */
 function placeSource() {
-	if(currentTool === tools[0]) && !existingSource) {
+	if(currentTool === tools[0] && !existingSource) {
 		source["x"] = mousePos["x"];
 		source["y"] = mousePos["y"];
 		existingSource = true;
@@ -42,7 +41,7 @@ function placeSource() {
 	Selects the receptor
  */
 function selectReceptor() {
-	if(currentTool === tools[1])) {
+	if(currentTool === tools[1]) {
 	}
 }
 
@@ -50,7 +49,7 @@ function selectReceptor() {
 	Places the receptor on the canvas
  */
 function placeReceptor() {
-	if(currentTool === tools[1])) {
+	if(currentTool === tools[1]) {
 	}
 }
 
@@ -58,7 +57,7 @@ function placeReceptor() {
 	Selects the wall material
  */
 function selectMaterial() {
-	if(currentTool === tools[2])) {
+	if(currentTool === tools[2]) {
 	}
 }
 
@@ -66,7 +65,7 @@ function selectMaterial() {
 	Draws a rectangle with the right material
  */
 function placeRoom() {
-	if(currentTool === tools[2])) {
+	if(currentTool === tools[2]) {
 	}
 }
 
@@ -91,9 +90,15 @@ function getSignalStrength() {
 
 }
 
-function drawUI() {
-	
-}
+/*function drawUI() {
+	context.beginPath();
+	context.rect(10, 10, 10, 10);
+	context.fillStyle = "yellow";
+	context.fill();
+	context.lineWidth = 1;
+	context.strokeStyle = "black";
+	context.stroke();
+}*/
 
 
 function getMousePos(canvas, evt) {
@@ -104,12 +109,12 @@ function getMousePos(canvas, evt) {
    	};
 }
 
-function writeMessage(canvas, message) {
+function writeMessage(canvas, message, x, y) {
     var context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.font = '18pt Calibri';
     context.fillStyle = 'black';
-    context.fillText(message, 10, 25);
+    context.fillText(message, x, y);
 }
 
 var mousePos; 
@@ -118,5 +123,6 @@ canvas.addEventListener('mousemove', function(evt) {
       }, false);
 canvas.addEventListener('mouseButtonDown', function(evt) {
 	var pos = getMousePos(canvas, evt);
-	if (/*in ui, act as ui*/)
+	//if (/*in ui, act as ui*/)
 });
+
