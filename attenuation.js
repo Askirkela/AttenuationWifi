@@ -1,36 +1,79 @@
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 
-var signalThroughAir = {
-    "2.4Ghz": [46, 52, 56, 60, 64, 66, 74, 80, 88, 94],
-    "5.8GHz": [54, 58, 63, 68, 71, 74, 82, 88, 96, 102]
+var signalAttenuation = {
+    "Air": {
+    	"2.4Ghz": {
+    		"2m": 46, 
+    		"4m": 52, 
+    		"6m": 56, 
+    		"10m": 60, 
+    		"15m": 64, 
+    		"20m": 66, 
+    		"50m": 74, 
+    		"100m": 80, 
+    		"250m": 88, 
+    		"500m": 94
+    		},
+    	"5.8GHz": {
+    		"2m": 54, 
+    		"4m": 58, 
+    		"6m": 63, 
+    		"10m": 68, 
+    		"15m": 71, 
+    		"20m": 74, 
+    		"50m": 82, 
+    		"100m": 88, 
+    		"250m": 96, 
+    		"500m": 102
+    		}
+    	},
+    "Materials": {
+    	"2.4Ghz": {
+    		"Plaque de platre": 3,
+    		"Parois interieure": 4,
+    		"Parois de cabine": 5,
+    		"Porte en bois": 4,
+    		"Mur en brique": 6,
+    		"Mur en beton (10cm)": 9,
+    		"Mur en beton (25cm)": 15,
+    		"Mur en beton arme": 18,
+    		"Dalle en beton arme": 23,
+    		"Verre simple": 3,
+    		"Double vitrage": 13,
+    		"Verre pare-balles": 10,
+    		"Porte blindee" : 19
+    		},
+    	"5.8GHz": {
+    		"Plaque de platre": 4,
+    		"Parois interieure": 5,
+    		"Parois de cabine": 9,
+    		"Porte en bois": 7,
+    		"Mur en brique": 10,
+    		"Mur en beton (10cm)": 13,
+    		"Mur en beton (25cm)": 25,
+    		"Mur en beton arme": 30,
+    		"Dalle en beton arme": 35,
+    		"Verre simple": 8,
+    		"Double vitrage": 20,
+    		"Verre pare-balles": 20,
+    		"Porte blindee" : 32
+    		}
+    	}
     };
 
-var signalThroughMaterial = {
-    "2.4Ghz": [3, 4, 5, 4, 6, 9, 15, 18, 23, 3, 13, 10, 19],
-    "5.8GHz": [4, 5, 9, 7, 10, 13, 25, 30, 35, 8, 20, 20, 32]
-    };
 
-var tools = ["source", "receptor", "room", "none"];
 var currentTool = "none";
 var existingSource = false;
-var sourceStrength = 0;
-/**
-	Selects the signal's source (2.4GHz or 5.8GHz)
- */
-function selectSource() {
-	if(currentTool === tools[0] && !existingSource) {
-		currentTool = tools[0];
-		sourceStrength;
-		console.log("Current tool : source");
-	}
-}
+var sourceStrength = 20;
+var source;
 
 /**
 	Places the source on the canvas
  */
 function placeSource() {
-	if(currentTool === tools[0] && !existingSource) {
+	if(!existingSource) {
+		
 		source["x"] = mousePos["x"];
 		source["y"] = mousePos["y"];
 		existingSource = true;
@@ -78,28 +121,29 @@ function getDistance(source, receptor) {
 
 /**
 	Calculates the signal's attenuation from source to receptor
+	Atténuation = 92,45+20*LOG10(Freq en GHz)+20*LOG10(Dist en km)
  */
-function getAttenuation() {
-
+function getAttenuation(freq, distance) {
+	return -Math.floor(92.45+20*Math.log10(freq)+20*Math.log10(distance/1000));
 }
 
 /**
 	Returns a quality value for the signal
  */
-function getSignalStrength() {
-
+function getSignalStrength(attenuation) {
+	if (attenuation > -77) {
+		return "Excellent";
+	}
+	if (attenuation > -78 && attenuation < -86) {
+		return "Good";
+	}
+	if (attenuation > -87 && attenuation < -92) {
+		return "Weak";
+	}
+	else {
+		return "None";
+	}
 }
-
-/*function drawUI() {
-	context.beginPath();
-	context.rect(10, 10, 10, 10);
-	context.fillStyle = "yellow";
-	context.fill();
-	context.lineWidth = 1;
-	context.strokeStyle = "black";
-	context.stroke();
-}*/
-
 
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
@@ -123,6 +167,5 @@ canvas.addEventListener('mousemove', function(evt) {
       }, false);
 canvas.addEventListener('mouseButtonDown', function(evt) {
 	var pos = getMousePos(canvas, evt);
-	//if (/*in ui, act as ui*/)
 });
 

@@ -2,16 +2,51 @@
 <head>
 	<title>Attenuation wifi</title>
 	<style type="text/css">
+		#ui{
+			background-color: grey;
+			display: inline-flex;
+			position: absolute;
+			padding-left: 25%;
+			padding-right: 25%;
+		}
+		#ui .block{
+			margin-left: 10%;
+			display: inline-flex;
+		}
+		#ui .block:last-child{
+			margin-right: 10%;
+		}
 		canvas{
 			border: 1px solid black;
-			margin-left: 25%;
+			margin-left: 5%;
+			margin-right: 5%;
+			margin-top: 100px;
+			width: 90%;
+			height: 100%;
 		}
 	</style>
-	<script type="text/javascript" src="http://repo.zebkit.org/latest/zebra.min.js"></script>
-	<script type="text/javascript" src="attenuationZebra.js"> </script>
+	<script type="text/javascript" src="attenuation.js"> </script>
 </head>
 <body>
-	<!-- <canvas id="canvas" width="700" height="700"></canvas> -->
-	
+	<div id="ui">
+		<div class="block">
+			<!-- <p>Source</p> -->
+			<button id="sourceLow">Place 2.4GHz source</button>
+			<button id="sourceHigh">Place 5.8GHz source</button>
+		</div>
+		<div class="block">
+			<!-- <p>Receptor</p> -->
+			<button id="receptor">Place receptor</button>
+		</div>
+		<div class="block">
+			<!-- <p>Walls</p> -->
+			<select>
+				<option>Default</option>
+				<option>Default2</option>
+			</select>
+			<button>Place wall</button>
+		</div>
+	</div>
+	<canvas id="canvas"></canvas>
 </body>
 </html>
