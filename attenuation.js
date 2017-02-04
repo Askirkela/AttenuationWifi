@@ -1,6 +1,20 @@
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 
+var materials = ["Plaque de platre",
+            "Parois interieure",
+            "Parois de cabine",
+            "Porte en bois",
+            "Mur en brique",
+            "Mur en beton (10cm)",
+            "Mur en beton (25cm)",
+            "Mur en beton arme",
+            "Dalle en beton arme",
+            "Verre simple",
+            "Double vitrage",
+            "Verre pare-balles",
+            "Porte blindee"];
+
 var signalAttenuation = {
     "Air": {
     	"2.4Ghz": {
@@ -62,29 +76,22 @@ var signalAttenuation = {
     	}
     };
 
-
+var tools = ["sourceLow", "sourceHigh", "receptor", "wall", "none"];
 var currentTool = "none";
 var existingSource = false;
 var sourceStrength = 20;
 var source;
-
+var select = document.getElementById('materials');
 /**
 	Places the source on the canvas
  */
 function placeSource() {
-	if(!existingSource) {
+	if(!existingSource && (currentTool === tools[0] || currentTool === tools[1])) {
 		
 		source["x"] = mousePos["x"];
 		source["y"] = mousePos["y"];
 		existingSource = true;
-	}
-}
-
-/**
-	Selects the receptor
- */
-function selectReceptor() {
-	if(currentTool === tools[1]) {
+        drawSource(currentTool);
 	}
 }
 
@@ -92,14 +99,6 @@ function selectReceptor() {
 	Places the receptor on the canvas
  */
 function placeReceptor() {
-	if(currentTool === tools[1]) {
-	}
-}
-
-/**
-	Selects the wall material
- */
-function selectMaterial() {
 	if(currentTool === tools[2]) {
 	}
 }
@@ -108,7 +107,7 @@ function selectMaterial() {
 	Draws a rectangle with the right material
  */
 function placeRoom() {
-	if(currentTool === tools[2]) {
+	if(currentTool === tools[3]) {
 	}
 }
 
@@ -123,8 +122,8 @@ function getDistance(source, receptor) {
 	Calculates the signal's attenuation from source to receptor
 	Atténuation = 92,45+20*LOG10(Freq en GHz)+20*LOG10(Dist en km)
  */
-function getAttenuation(freq, distance) {
-	return -Math.floor(92.45+20*Math.log10(freq)+20*Math.log10(distance/1000));
+function getAirAttenuation(freq, distance) {
+	return Math.floor(92.45+20*Math.log10(freq)+20*Math.log10(distance/1000));
 }
 
 /**
@@ -165,7 +164,14 @@ var mousePos;
 canvas.addEventListener('mousemove', function(evt) {
         mousePos = getMousePos(canvas, evt);
       }, false);
-canvas.addEventListener('mouseButtonDown', function(evt) {
-	var pos = getMousePos(canvas, evt);
-});
 
+/*$.each(json, function(i, value) {
+            $('#myselect').append($('<option>').text(value).attr('value', value));
+        });*/
+
+materials.forEach(function(e) {
+    var opt = document.createElement("option");
+    var text = document.createTextNode(e);
+    opt.append(text);
+    select.append(opt);
+});

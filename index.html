@@ -1,52 +1,32 @@
 <!doctype html>
 <head>
 	<title>Attenuation wifi</title>
-	<style type="text/css">
-		#ui{
-			background-color: grey;
-			display: inline-flex;
-			position: absolute;
-			padding-left: 25%;
-			padding-right: 25%;
-		}
-		#ui .block{
-			margin-left: 10%;
-			display: inline-flex;
-		}
-		#ui .block:last-child{
-			margin-right: 10%;
-		}
-		canvas{
-			border: 1px solid black;
-			margin-left: 5%;
-			margin-right: 5%;
-			margin-top: 100px;
-			width: 90%;
-			height: 100%;
-		}
-	</style>
-	<script type="text/javascript" src="attenuation.js"> </script>
+	<link rel="stylesheet" type="text/css" href="styles.css" />
+	<link rel="stylesheet" type="text/css" href="mediaqueries.css" />
+	
+	<!--[if lt IE 9]>
+		<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<![endif]-->
 </head>
 <body>
 	<div id="ui">
 		<div class="block">
 			<!-- <p>Source</p> -->
-			<button id="sourceLow">Place 2.4GHz source</button>
-			<button id="sourceHigh">Place 5.8GHz source</button>
+			<button id="sourceLow" class="ui-button">Place 2.4GHz source</button>
+			<button id="sourceHigh" class="ui-button">Place 5.8GHz source</button>
 		</div>
 		<div class="block">
 			<!-- <p>Receptor</p> -->
-			<button id="receptor">Place receptor</button>
+			<button id="receptor" class="ui-button">Place receptor</button>
 		</div>
 		<div class="block">
 			<!-- <p>Walls</p> -->
-			<select>
-				<option>Default</option>
-				<option>Default2</option>
+			<select id="materials">
 			</select>
-			<button>Place wall</button>
+			<button id="placeWalls" class="ui-button">Place wall</button>
 		</div>
 	</div>
 	<canvas id="canvas"></canvas>
+	<script type="text/javascript" src="attenuation.js"> </script>
 </body>
 </html>
