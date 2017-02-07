@@ -10,20 +10,21 @@
 </head>
 <body>
 	<div id="ui">
-		<div class="block">
+		<div class="block" id="source">
 			<!-- <p>Source</p> -->
-			<button id="sourceLow" class="ui-button">Place 2.4GHz source</button>
-			<button id="sourceHigh" class="ui-button">Place 5.8GHz source</button>
+			<button id="sourceLow" class="ui-button" onclick="selectTool(0);">Place 2.4GHz source</button>
+			<button id="sourceHigh" class="ui-button" onclick="selectTool(1);">Place 5.8GHz source</button>
+			<button id="removeSource" class="ui-button" onclick="removeSource();">Remove source</button>
 		</div>
-		<div class="block">
+		<div class="block" id="receptors">
 			<!-- <p>Receptor</p> -->
-			<button id="receptor" class="ui-button">Place receptor</button>
+			<button id="receptor" class="ui-button" onclick="selectTool(2);">Place receptor</button>
 		</div>
-		<div class="block">
+		<div class="block" id="walls">
 			<!-- <p>Walls</p> -->
 			<select id="materials">
 			</select>
-			<button id="placeWalls" class="ui-button">Place wall</button>
+			<button id="placeWalls" class="ui-button" onclick="selectTool(3);">Place wall</button>
 		</div>
 	</div>
 	<canvas id="canvas"></canvas>
