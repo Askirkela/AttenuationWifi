@@ -1,43 +1,61 @@
 <!doctype html>
 <head>
 	<title>Attenuation wifi</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  		crossorigin="anonymous"></script>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css" />
 	<link rel="stylesheet" type="text/css" href="mediaqueries.css" />
 	
 	<!--[if lt IE 9]>
 		<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
 	<![endif]-->
+	
 </head>
 <body>
-	<div id="ui">
-		<div class="block" id="source">
-			<!-- <p>Source</p> -->
-			<button id="sourceLow" class="ui-button" onclick="selectTool(0);">Place 2.4GHz source</button>
-			<button id="sourceHigh" class="ui-button" onclick="selectTool(1);">Place 5.8GHz source</button>
-			<button id="removeSource" class="ui-button" onclick="removeSource();">Remove source</button>
+	<div class="container-fluid">
+		<div id="ui" class="row">
+			<div class="block col-md-5 col-xs-12" id="source">
+					<button id="sourceLow" class="btn btn-default ui-button" onclick="selectTool(0);">Place 2.4GHz source</button>
+					<button id="sourceHigh" class="btn btn-default ui-button" onclick="selectTool(1);">Place 5.8GHz source</button>
+					<button id="removeSource" class="btn btn-warning ui-button" onclick="removeSource();">Remove source</button>
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+			<div class="block col-md-3 col-xs-12" id="receptors">
+					<button id="receptor" class="btn btn-default ui-button" onclick="selectTool(2);">Place receptor</button>
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+			<div class="block col-md-3 col-xs-12" id="walls">
+					<select id="materials"></select>
+					<button id="placeWalls" class="btn btn-default ui-button" onclick="selectTool(3);">Place wall</button>
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+			<div class="block col-md-1 col-xs-12" id="reset">
+					<button id="reset" class="btn btn-warning ui-button" onclick="clearCanvas();">Clear</button>
+			</div>
 		</div>
-		<div class="block" id="receptors">
-			<!-- <p>Receptor</p> -->
-			<button id="receptor" class="ui-button" onclick="selectTool(2);">Place receptor</button>
+		<div class="row">
+			<canvas id="canvas" class="col-md-12 col-xs-12"></canvas>
 		</div>
-		<div class="block" id="walls">
-			<!-- <p>Walls</p> -->
-			<select id="materials">
-			</select>
-			<button id="placeWalls" class="ui-button" onclick="selectTool(3);">Place wall</button>
+		<div id="info" class="row">
+			<div class="col-md-1"> Current tool : <span id="infocurtool"></span></div>
+			<div class="col-md-1"> Current material : <span id="infocurmat"></span></div>
+			<div class="col-md-1"> Existing source : <span id="infoexistingsource"></span></div>
+			<div class="col-md-2"> Source position : <span id="infosourcepos"></span></div>
+			<div class="col-md-2"> Receptor position : <span id="inforeceptorpos"></span></div>
+			<div class="col-md-3"> Mouse position : <span id="infomousepos"></span></div>
 		</div>
-		<div class="block" id="reset">
-			<button id="reset" class="ui-button" onclick="clearCanvas();">Clear</button>
-		</div>
-	</div>
-	<canvas id="canvas"></canvas>
-	<div id="info">
-		<p> Current tool : <span id="infocurtool" class="infoText"></span></p>
-		<p> Current material : <span id="infocurmat" class="infoText"></span></p>
-		<p> Existing source : <span id="infoexistingsource" class="infoText"></span></p>
-		<p> Source position : <span id="infosourcepos" class="infoText"></span></p>
-		<p> Receptor position : <span id="inforeceptorpos" class="infoText"></span></p>
-		<p> Mouse position : <span id="infomousepos" class="infoText"></span></p>
 	</div>
 	<script type="text/javascript" src="variables.js"></script>
 	<script type="text/javascript" src="attenuation.js"> </script>
