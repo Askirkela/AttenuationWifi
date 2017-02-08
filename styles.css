@@ -1,26 +1,35 @@
+body {
+	font-size: 100%;
+}
+
 #ui {
 	background-color: grey;
 	display: inline-flex;
-	position: absolute;
 	width: 100%;
-	margin-left: auto;
-	margin-right: auto;
-	vertical-align: middle;
 }
 #ui .block {
-	padding-left: 10%;
-/*	display: inline-flex;*/
+	margin: auto;
 }
 #ui .block:last-child {
-	padding-right: 10%;
+	/*padding-right: 10px;*/
 }
 .ui-button {
-	max-width: 100px;
-	margin-left: 10px;
+	max-height: 25px;
 }
 canvas {
 	border: 1px solid black;
-	margin-top: 50px;
+	margin-top: 10px;
 	width: 100%;
 	height: 100%;
+}
+#info {
+	border: 1px solid black;
+	/*display: inline-flex;*/
+}
+.infoText {
+	/*display: inline-block;*/
+	font-weight: normal;
+}
+p {
+	font-weight: bold;
 }

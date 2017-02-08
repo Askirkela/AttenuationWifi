@@ -1,52 +1,8 @@
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
-
-var materials = ["Plaque de platre",
-            "Parois interieure",
-            "Parois de cabine",
-            "Porte en bois",
-            "Mur en brique",
-            "Mur en beton (10cm)",
-            "Mur en beton (25cm)",
-            "Mur en beton arme",
-            "Dalle en beton arme",
-            "Verre simple",
-            "Double vitrage",
-            "Verre pare-balles",
-            "Porte blindee"];
-
-/**
-    material : {freq1 : attenuation, freq2 : attenuation}
- */
-var materialsAttenuation = {
-	"Plaque de platre": {2.4: 3, 5.8: 4},
-	"Parois interieure": {2.4: 4, 5.8: 5},
-	"Parois de cabine": {2.4: 5, 5.8: 9},
-	"Porte en bois": {2.4: 4, 5.8: 7},
-	"Mur en brique": {2.4: 6, 5.8: 10},
-	"Mur en beton (10cm)": {2.4: 9, 5.8: 13},
-	"Mur en beton (25cm)": {2.4: 15, 5.8: 25},
-	"Mur en beton arme": {2.4: 18, 5.8: 30},
-	"Dalle en beton arme": {2.4: 23, 5.8: 35},
-	"Verre simple": {2.4: 3, 5.8: 8},
-	"Double vitrage": {2.4: 13, 5.8: 20},
-	"Verre pare-balles": {2.4: 10, 5.8: 20},
-	"Porte blindee" : {2.4: 19, 5.8: 32}
-};
-
-var tools = ["sourceLow", "sourceHigh", "receptor", "wall", "none"];
-var currentTool = "none";
-var existingSource = false;
-var sourceStrength = 20;
-var source = {"x":0, "y":0};
-var currentMaterial;
-var select = document.getElementById('materials');
-
 /**
     Selects the apropriate tool
  */
 var selectTool = function(toolIndex) {
-    currentTool = tools[4];
+    resetTool();
     currentMaterial = "";
     try {
         currentTool = tools[toolIndex];
@@ -57,8 +13,7 @@ var selectTool = function(toolIndex) {
     } catch (err) {
         alert("An error occured while selecting the tool : " + err);
     }
-    console.log(currentTool);
-    console.log(currentMaterial);
+    currState();
 };
 
 /**
@@ -66,19 +21,23 @@ var selectTool = function(toolIndex) {
  */
 var placeSource = function(x, y) {
 	if (!existingSource && (currentTool === tools[0] || currentTool === tools[1])) {
-		source["x"] = x;
-		source["y"] = y;
+		source.x = x;
+		source.y = y;
 		existingSource = true;
-        drawSource(source["x"], source["y"], currentTool);
-        currentTool = tools[4];
+        drawSource(x, y);
+        resetTool();
 	}
 };
 
 /**
 	Places the receptor on the canvas
  */
-var placeReceptor = function() {
+var placeReceptor = function(x, y) {
 	if(currentTool === tools[2]) {
+        receptor.x = x;
+        receptor.y = y;
+        drawReceptor(x, y);
+        resetTool();
 	}
 };
 
@@ -142,17 +101,21 @@ var getSignalStrength = function(freq, dist, mat) {
 /**
     Draws the source on canvas
  */
-var drawSource = function(x, y, currentSource) {
+var drawSource = function(x, y) {
     drawSquare(x, y, "blue");
 };
 
 var removeSource = function() {
     if (existingSource) {
-        drawSquare(source["x"], source["y"], "white");
-        source = {"x":0, "y":0};
+        drawSquare(source.x, source.y, "white");
+        source = {x:-1, y:-1};
         existingSource = false;
         currentTool = tools[4];
     }
+};
+
+var drawReceptor = function(x, y) {
+    drawSquare(x, y, "green");
 };
 
 var getMousePos = function(canvas, evt) {
@@ -164,30 +127,56 @@ var getMousePos = function(canvas, evt) {
 };
 
 var writeMessage = function(canvas, message, x, y) {
-    var context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.font = '18pt Calibri';
-    context.fillStyle = 'black';
-    context.fillText(message, x, y);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '18pt Calibri';
+    ctx.fillStyle = 'black';
+    ctx.fillText(message, x, y);
 };
 
 var drawSquare = function(x, y, color) {
-    context.beginPath();
-    context.rect(x-50, y-50, x+50, y+50);
-    context.fillStyle = color;
-    context.fill();
-    context.stroke();
+    ctx.fillStyle = color;
+    ctx.fillRect(x-5, y-5, x+5, y+5);
+};
+
+var clearCanvas = function() {
+    resetTool();
+    existingSource = false;
+    source = {x:-1, y:-1};
+    receptor = {x:-1, y:-1};
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+};
+
+var resetTool = function() {
+    currentTool = tools[4];
+};
+
+var dispatch = function() {
+    switch(currentTool) {
+        case tools[0]:
+            placeSource(mousePos.x, mousePos.y);
+            break;
+        case tools[1]:
+            placeSource(mousePos.x, mousePos.y);
+            break;
+        case tools[2]:
+            placeReceptor(mousePos.x, mousePos.y);
+            break;
+        case tools[3]:
+            console.log("Place wall");
+            break;
+        default:
+            break;
+    }
 };
 
 var mousePos; 
 canvas.addEventListener('mousemove', function(evt) {
         mousePos = getMousePos(canvas, evt);
+        currState();
     }, false);
 canvas.addEventListener('mousedown', function(evt) {
-        currState();
         mousePos = getMousePos(canvas, evt);
-        console.log("mousedown : " + mousePos["x"] + "," + mousePos["y"]);
-        placeSource(mousePos["x"], mousePos["y"]);
+        dispatch();
         currState();
     }, false);
 
@@ -202,43 +191,24 @@ materials.forEach(function(e) {
 });
 
 var currState = function() {
-    console.log("---- Current state of affairs ----");
-    console.log("Current tool : "+currentTool);
-    console.log("Current material : "+currentMaterial);
-    console.log("Existing source : "+existingSource);
-    console.log("Source pos : "+JSON.stringify(source));
+    var infocurtool = document.getElementById('infocurtool');
+    var infocurmat = document.getElementById('infocurmat');
+    var infoexistingsource = document.getElementById('infoexistingsource');
+    var infosourcepos = document.getElementById('infosourcepos');
+    var inforeceptorpos = document.getElementById('inforeceptorpos');
+    var infomousepos = document.getElementById('infomousepos');
+
+    infocurtool.innerText = currentTool;
+    infocurmat.innerText = currentMaterial;
+    infoexistingsource.innerText = existingSource;
+    infosourcepos.innerText = JSON.stringify(source);
+    inforeceptorpos.innerText = JSON.stringify(receptor);
+    infomousepos.innerText = JSON.stringify(mousePos);
 };
 
-
-
-
-
-
-
-/*var signalAttenuation = {
-    "Air": {
-        "2.4Ghz": {
-            "2m": 46, 
-            "4m": 52, 
-            "6m": 56, 
-            "10m": 60, 
-            "15m": 64, 
-            "20m": 66, 
-            "50m": 74, 
-            "100m": 80, 
-            "250m": 88, 
-            "500m": 94
-            },
-        "5.8GHz": {
-            "2m": 54, 
-            "4m": 58, 
-            "6m": 63, 
-            "10m": 68, 
-            "15m": 71, 
-            "20m": 74, 
-            "50m": 82, 
-            "100m": 88, 
-            "250m": 96, 
-            "500m": 102
-            }
-        },*/
+/** Ca teste! */
+/*selectTool(0);
+placeSource(0,0);
+selectTool(2);
+placeReceptor(50, 100);
+resetTool();*/

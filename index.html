@@ -26,8 +26,20 @@
 			</select>
 			<button id="placeWalls" class="ui-button" onclick="selectTool(3);">Place wall</button>
 		</div>
+		<div class="block" id="reset">
+			<button id="reset" class="ui-button" onclick="clearCanvas();">Clear</button>
+		</div>
 	</div>
 	<canvas id="canvas"></canvas>
+	<div id="info">
+		<p> Current tool : <span id="infocurtool" class="infoText"></span></p>
+		<p> Current material : <span id="infocurmat" class="infoText"></span></p>
+		<p> Existing source : <span id="infoexistingsource" class="infoText"></span></p>
+		<p> Source position : <span id="infosourcepos" class="infoText"></span></p>
+		<p> Receptor position : <span id="inforeceptorpos" class="infoText"></span></p>
+		<p> Mouse position : <span id="infomousepos" class="infoText"></span></p>
+	</div>
+	<script type="text/javascript" src="variables.js"></script>
 	<script type="text/javascript" src="attenuation.js"> </script>
 </body>
 </html>
