@@ -1,4 +1,4 @@
-var canvas = document.getElementById('canvas');
+var canvas = $('canvas')[0];
 var ctx = canvas.getContext('2d');
 
 var materials = ["Plaque de platre",
@@ -36,9 +36,10 @@ var materialsAttenuation = {
 
 var tools = ["sourceLow", "sourceHigh", "receptor", "wall", "none"];
 var currentTool = "none";
-var existingSource = false;
-var sourceStrength = 20;
-var source = {x: -1, y: -1};
-var receptor = {x: -1, y: -1};
+var existingsrc = false;
+var srcStrength = 20;
+var srcSig = [2.4, 5.8];
+var src = {x: -1, y: -1};
+var receptor = [];
 var currentMaterial;
-var select = document.getElementById('materials');
+var select = $('#materials')[0];

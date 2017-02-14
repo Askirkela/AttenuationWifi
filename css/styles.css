@@ -1,0 +1,23 @@
+#ui {
+	margin-top: 10px;
+}
+.ui-button {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+canvas {
+	border: 1px solid black;
+	margin-top: 10px;
+}
+#info {
+	margin-top: 10px;
+}
+
+/* A voir */
+.dark {
+	background-color: rgb(38, 38, 38);
+	color: lightgrey;
+}
+canvas .dark {
+	background-color: white;
+}

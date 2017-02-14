@@ -15,8 +15,8 @@
 
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<link rel="stylesheet" type="text/css" href="styles.css" />
-	<link rel="stylesheet" type="text/css" href="mediaqueries.css" />
+	<link rel="stylesheet" type="text/css" href="css/styles.css" />
+	<link rel="stylesheet" type="text/css" href="css/mediaqueries.css" />
 	
 	<!--[if lt IE 9]>
 		<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
@@ -34,27 +34,39 @@
 			<div class="clearfix visible-xs-block"></div>
 			<div class="block col-md-3 col-xs-12" id="receptors">
 					<button id="receptor" class="btn btn-default ui-button" onclick="selectTool(2);">Place receptor</button>
+					<button id="removeReceptor" class="btn btn-warning ui-button" onclick="removeReceptor();">Remove receptor</button>
 			</div>
 			<div class="clearfix visible-xs-block"></div>
-			<div class="block col-md-3 col-xs-12" id="walls">
-					<select id="materials"></select>
+			<div class="block col-md-3 col-xs-12 form-group" id="walls">
+					<select id="materials" class="form-control"></select>
 					<button id="placeWalls" class="btn btn-default ui-button" onclick="selectTool(3);">Place wall</button>
 			</div>
 			<div class="clearfix visible-xs-block"></div>
-			<div class="block col-md-1 col-xs-12" id="reset">
+			<div class="block col-md-1 col-xs-12">
 					<button id="reset" class="btn btn-warning ui-button" onclick="clearCanvas();">Clear</button>
 			</div>
 		</div>
 		<div class="row">
-			<canvas id="canvas" class="col-md-12 col-xs-12"></canvas>
+			<canvas id="canvas" width="1000" height="700"></canvas>
+		</div>
+		<div class="row">
+			<div class="col-md-6">Source to receptor attenuation : <span id="sigatn"></span></div>
+			<div class="col-md-6">Source to receptor signal strength : <span id="sigstr"></span></div>
 		</div>
 		<div id="info" class="row">
-			<div class="col-md-1"> Current tool : <span id="infocurtool"></span></div>
-			<div class="col-md-1"> Current material : <span id="infocurmat"></span></div>
-			<div class="col-md-1"> Existing source : <span id="infoexistingsource"></span></div>
-			<div class="col-md-2"> Source position : <span id="infosourcepos"></span></div>
-			<div class="col-md-2"> Receptor position : <span id="inforeceptorpos"></span></div>
-			<div class="col-md-3"> Mouse position : <span id="infomousepos"></span></div>
+			<div class="col-md-4"> Current tool : <span id="infocurtool"></span></div>
+			<div class="col-md-4"> Current material : <span id="infocurmat"></span></div>
+			<div class="col-md-4"> Existing source : <span id="infoexistingsource"></span></div>
+		</div>
+		<div id="info2" class="row">
+			<div class="col-md-4"> Source position : <span id="infosourcepos"></span></div>
+			<div class="col-md-4"> Receptor position : <span id="inforeceptorpos"></span></div>
+			<div class="col-md-4"> Mouse position : <span id="infomousepos"></span></div>
+		</div>
+		
+		<!-- A voir -->
+		<div id="dark" class="row">
+			<button id="darkbutton" class="col-md-2 btn btn-default ui-button" onclick="$('body').toggleClass('dark');">Change theme</button>
 		</div>
 	</div>
 	<script type="text/javascript" src="variables.js"></script>

@@ -7,7 +7,7 @@ var selectTool = function(toolIndex) {
     try {
         currentTool = tools[toolIndex];
         if (toolIndex === 3) {
-            var opt = document.getElementById('materials').options;
+            var opt = select.options;
             currentMaterial = opt[opt.selectedIndex].value;
         }
     } catch (err) {
@@ -20,10 +20,10 @@ var selectTool = function(toolIndex) {
 	Places the source on the canvas
  */
 var placeSource = function(x, y) {
-	if (!existingSource && (currentTool === tools[0] || currentTool === tools[1])) {
-		source.x = x;
-		source.y = y;
-		existingSource = true;
+	if (!existingsrc && (currentTool === tools[0] || currentTool === tools[1])) {
+		src.x = x;
+		src.y = y;
+		existingsrc = true;
         drawSource(x, y);
         resetTool();
 	}
@@ -34,8 +34,7 @@ var placeSource = function(x, y) {
  */
 var placeReceptor = function(x, y) {
 	if(currentTool === tools[2]) {
-        receptor.x = x;
-        receptor.y = y;
+        receptor.push({"x":x, "y":y});
         drawReceptor(x, y);
         resetTool();
 	}
@@ -52,8 +51,8 @@ var placeRoom = function() {
 /**
 	Calculates the distance between source and receptor
  */
-var getDistance = function(source, receptor) {
-	return Math.sqrt(Math.pow(source["x"] - source["y"], 2) + Math.pow(receptor["x"] - receptor["y"]));
+var getDistance = function(src, receptor) {
+	return Math.sqrt(Math.pow(src.x - src.y, 2) + Math.pow(receptor.x - receptor.y, 2));
 };
 
 /**
@@ -76,7 +75,7 @@ var getMaterialsAttenuation = function(freq, mat) {
 };
 
 var getTotalAttenuation = function(freq, dist, mat) {
-    return sourceStrength - getAirAttenuation(freq, dist) - getMaterialsAttenuation(freq, mat);
+    return srcStrength - getAirAttenuation(freq, dist) - getMaterialsAttenuation(freq, mat);
 };
 
 /**
@@ -106,11 +105,21 @@ var drawSource = function(x, y) {
 };
 
 var removeSource = function() {
-    if (existingSource) {
-        drawSquare(source.x, source.y, "white");
-        source = {x:-1, y:-1};
-        existingSource = false;
-        currentTool = tools[4];
+    if (existingsrc) {
+        ctx.clearRect(src.x, src.y, 10, 20);
+        src = {x:-1, y:-1};
+        existingsrc = false;
+        resetTool();
+        currState();
+    }
+};
+
+var removeReceptor = function() {
+    if (receptor) {
+        ctx.clearRect(receptor.x, receptor.y, 10, 20);
+        receptor = {x:-1, y:-1};
+        resetTool();
+        currState();
     }
 };
 
@@ -135,15 +144,16 @@ var writeMessage = function(canvas, message, x, y) {
 
 var drawSquare = function(x, y, color) {
     ctx.fillStyle = color;
-    ctx.fillRect(x-5, y-5, x+5, y+5);
+    ctx.fillRect(x, y, 10, 20);
 };
 
 var clearCanvas = function() {
     resetTool();
-    existingSource = false;
-    source = {x:-1, y:-1};
+    existingsrc = false;
+    src = {x:-1, y:-1};
     receptor = {x:-1, y:-1};
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    currState();
 };
 
 var resetTool = function() {
@@ -191,24 +201,17 @@ materials.forEach(function(e) {
 });
 
 var currState = function() {
-    var infocurtool = document.getElementById('infocurtool');
-    var infocurmat = document.getElementById('infocurmat');
-    var infoexistingsource = document.getElementById('infoexistingsource');
-    var infosourcepos = document.getElementById('infosourcepos');
-    var inforeceptorpos = document.getElementById('inforeceptorpos');
-    var infomousepos = document.getElementById('infomousepos');
+    var infocurtool = $('#infocurtool')[0];
+    var infocurmat = $('#infocurmat')[0];
+    var infoexistingsrc = $('#infoexistingsource')[0];
+    var infosrcpos = $('#infosourcepos')[0];
+    var inforeceptorpos = $('#inforeceptorpos')[0];
+    var infomousepos = $('#infomousepos')[0];
 
     infocurtool.innerText = currentTool;
     infocurmat.innerText = currentMaterial;
-    infoexistingsource.innerText = existingSource;
-    infosourcepos.innerText = JSON.stringify(source);
+    infoexistingsrc.innerText = existingsrc;
+    infosrcpos.innerText = JSON.stringify(src);
     inforeceptorpos.innerText = JSON.stringify(receptor);
     infomousepos.innerText = JSON.stringify(mousePos);
 };
-
-/** Ca teste! */
-/*selectTool(0);
-placeSource(0,0);
-selectTool(2);
-placeReceptor(50, 100);
-resetTool();*/
