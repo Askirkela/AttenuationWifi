@@ -1,5 +1,5 @@
-var canvas = $('canvas')[1];
 var back = $('canvas')[0];
+var canvas = $('canvas')[1];
 var ctx = canvas.getContext('2d');
 var ctxBack = back.getContext('2d');
 

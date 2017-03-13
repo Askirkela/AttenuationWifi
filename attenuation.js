@@ -296,3 +296,15 @@ materials.forEach(function(e) {
 
 //Draws the grid
 drawBackCanvas(back, ctxBack);
+
+//Fills the legend
+var legend = $('#legend')[0];
+console.log("==== Initializing legend ====");
+$.each(materialsColors, function(key, value) {
+    console.log("key : " + key + ", value : " + value);
+    var div = $('<div />', {
+        class: "col-md-2",
+        style: "color:gold;font-weight:bold;background-color:"+value,
+        text: key
+    }).appendTo(legend);
+});
