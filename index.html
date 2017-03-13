@@ -34,22 +34,26 @@
 			<div class="clearfix visible-xs-block"></div>
 			<div class="block col-md-3 col-xs-12" id="receptors">
 					<button id="receptor" class="btn btn-default ui-button" onclick="selectTool(2);">Place receptor</button>
-					<button id="removeReceptor" class="btn btn-warning ui-button" onclick="removeReceptor();">Remove receptor</button>
+					<button id="removeReceptor" class="btn btn-warning ui-button" onclick="removeReceptor();">Remove receptors</button>
 			</div>
 			<div class="clearfix visible-xs-block"></div>
 			<div class="block col-md-3 col-xs-12 form-group" id="walls">
 					<select id="materials" class="form-control"></select>
 					<button id="placeWalls" class="btn btn-default ui-button" onclick="selectTool(3);">Place wall</button>
+					<button id="rmWalls" class="btn btn-warning ui-button" onclick="removeWalls();">Remove walls</button>
 			</div>
 			<div class="clearfix visible-xs-block"></div>
 			<div class="block col-md-1 col-xs-12">
 					<button id="reset" class="btn btn-warning ui-button" onclick="clearCanvas();">Clear</button>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row" id="canvasWrapper">
+			<canvas id="backCanvas" width="1000" height="700"></canvas>
 			<canvas id="canvas" width="1000" height="700"></canvas>
 		</div>
-		<div class="row">
+		<div class="row" id="legend">
+		</div>
+		<div class="row" id="debug">
 			<div class="col-md-6">Source to receptor attenuation : <span id="sigatn"></span></div>
 			<div class="col-md-6">Source to receptor signal strength : <span id="sigstr"></span></div>
 		</div>

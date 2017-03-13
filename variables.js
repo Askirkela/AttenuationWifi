@@ -1,5 +1,7 @@
-var canvas = $('canvas')[0];
+var canvas = $('canvas')[1];
+var back = $('canvas')[0];
 var ctx = canvas.getContext('2d');
+var ctxBack = back.getContext('2d');
 
 var materials = ["Plaque de platre",
             "Parois interieure",
@@ -14,6 +16,20 @@ var materials = ["Plaque de platre",
             "Double vitrage",
             "Verre pare-balles",
             "Porte blindee"];
+
+var materialsColors = {"Plaque de platre" : '#003366',
+            "Parois interieure" : '#3366cc',
+            "Parois de cabine": '#33cccc',
+            "Porte en bois": '#663300',
+            "Mur en brique": '#993300',
+            "Mur en beton (10cm)": '#669999',
+            "Mur en beton (25cm)": '#666699',
+            "Mur en beton arme": '#9933ff',
+            "Dalle en beton arme": '#660066',
+            "Verre simple": '#99ccff',
+            "Double vitrage": '#3366ff',
+            "Verre pare-balles": '#0000ff',
+            "Porte blindee": '#003300'};
 
 /**
     material : {freq1 : attenuation, freq2 : attenuation}

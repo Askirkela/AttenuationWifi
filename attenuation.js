@@ -1,5 +1,5 @@
 /**
-    Selects the apropriate tool
+ * Selects the apropriate tool
  */
 var selectTool = function(toolIndex) {
     resetTool();
@@ -17,7 +17,7 @@ var selectTool = function(toolIndex) {
 };
 
 /**
-	Places the source on the canvas
+ * Places the source on the canvas
  */
 var placeSource = function(x, y) {
 	if (!existingsrc && (currentTool === tools[0] || currentTool === tools[1])) {
@@ -30,7 +30,7 @@ var placeSource = function(x, y) {
 };
 
 /**
-	Places the receptor on the canvas
+ * Places the receptor on the canvas
  */
 var placeReceptor = function(x, y) {
 	if(currentTool === tools[2]) {
@@ -41,30 +41,56 @@ var placeReceptor = function(x, y) {
 };
 
 /** 
-	Draws a rectangle with the right material
+ * Draws a rectangle with the right material
  */
-var placeRoom = function() {
+var placeWall = function(x, y, u, v) {
 	if(currentTool === tools[3]) {
+        var mat = select.selectedIndex;
+        console.log("Selected Material : " + materials[mat]);
+        var materialName = materials[mat];
+        ctx.beginPath();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = materialsColors[materialName];
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, u);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(u, y);
+        ctx.lineTo(u, v);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x, v);
+        ctx.lineTo(u, v);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, v);
+        ctx.stroke();
 	}
 };
 
+/* ================================================================================================================================================== */
+
 /**
-	Calculates the distance between source and receptor
+ * Calculates the distance between source and receptor
  */
 var getDistance = function(src, receptor) {
 	return Math.sqrt(Math.pow(src.x - src.y, 2) + Math.pow(receptor.x - receptor.y, 2));
 };
 
 /**
-	Calculates the signal's attenuation from source to receptor in the air
-	Atténuation = 92,45+20*LOG10(Freq en GHz)+20*LOG10(Dist en km)
+ * Calculates the signal's attenuation from source to receptor in the air
+ * Atténuation = 92,45+20*LOG10(Freq en GHz)+20*LOG10(Dist en km)
  */
 var getAirAttenuation = function(freq, distance) {
 	return Math.floor(92.45+20*Math.log10(freq)+20*Math.log10(distance/1000));
 };
 
 /**
-    Sums the signal attenuation from crossing materials
+ * Sums the signal attenuation from crossing materials
  */
 var getMaterialsAttenuation = function(freq, mat) {
     var sum = 0;
@@ -79,7 +105,7 @@ var getTotalAttenuation = function(freq, dist, mat) {
 };
 
 /**
-	Returns a quality value for the signal
+ * Returns a quality value for the signal
  */
 var getSignalStrength = function(freq, dist, mat) {
     var attenuation = getTotalAttenuation(freq, dist, mat);
@@ -97,13 +123,20 @@ var getSignalStrength = function(freq, dist, mat) {
 	}
 };
 
+/* ================================================================================================================================================== */
+
 /**
-    Draws the source on canvas
+ * Draws the source on canvas
  */
 var drawSource = function(x, y) {
     drawSquare(x, y, "blue");
 };
 
+
+
+/* ******************
+ * Remove X functions
+ * ******************/
 var removeSource = function() {
     if (existingsrc) {
         ctx.clearRect(src.x, src.y, 10, 20);
@@ -116,12 +149,21 @@ var removeSource = function() {
 
 var removeReceptor = function() {
     if (receptor) {
+        receptor.forEach(function(e) {
+            ctx.clearRect(e.x, e.y, 10, 20);
+        });
         ctx.clearRect(receptor.x, receptor.y, 10, 20);
-        receptor = {x:-1, y:-1};
+        receptor = [];
         resetTool();
-        currState();
+        currState();    
     }
 };
+
+var removeWalls = function() {
+
+}
+
+
 
 var drawReceptor = function(x, y) {
     drawSquare(x, y, "green");
@@ -130,8 +172,8 @@ var drawReceptor = function(x, y) {
 var getMousePos = function(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top
+      x: (evt.clientX - rect.left) - (evt.clientX - rect.left) % 10,
+      y: (evt.clientY - rect.top) - (evt.clientY - rect.top) % 10
    	};
 };
 
@@ -149,9 +191,9 @@ var drawSquare = function(x, y, color) {
 
 var clearCanvas = function() {
     resetTool();
-    existingsrc = false;
-    src = {x:-1, y:-1};
-    receptor = {x:-1, y:-1};
+    removeSource();
+    removeReceptor();
+    removeWalls();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     currState();
 };
@@ -160,7 +202,9 @@ var resetTool = function() {
     currentTool = tools[4];
 };
 
-var dispatch = function() {
+/* ================================================================================================================================================== */
+
+var dispatch = function(evt) {
     switch(currentTool) {
         case tools[0]:
             placeSource(mousePos.x, mousePos.y);
@@ -172,34 +216,23 @@ var dispatch = function() {
             placeReceptor(mousePos.x, mousePos.y);
             break;
         case tools[3]:
-            console.log("Place wall");
+            var mouseDownPos = mousePos;
+            canvas.onmouseup = function(e) {
+                var mouseUpPos = getMousePos(canvas, evt);
+                console.log(mouseDownPos);
+                console.log(mouseUpPos);
+                placeWall(mouseDownPos.x, mouseDownPos.y, mouseUpPos.x, mouseUpPos.y);
+            }
             break;
         default:
             break;
     }
 };
 
-var mousePos; 
-canvas.addEventListener('mousemove', function(evt) {
-        mousePos = getMousePos(canvas, evt);
-        currState();
-    }, false);
-canvas.addEventListener('mousedown', function(evt) {
-        mousePos = getMousePos(canvas, evt);
-        dispatch();
-        currState();
-    }, false);
 
 /**
-    Fills the select list of materials
+ * In-page debug
  */
-materials.forEach(function(e) {
-    var opt = document.createElement("option");
-    var text = document.createTextNode(e);
-    opt.append(text);
-    select.append(opt);
-});
-
 var currState = function() {
     var infocurtool = $('#infocurtool')[0];
     var infocurmat = $('#infocurmat')[0];
@@ -215,3 +248,51 @@ var currState = function() {
     inforeceptorpos.innerText = JSON.stringify(receptor);
     infomousepos.innerText = JSON.stringify(mousePos);
 };
+
+/**
+ * Draws a 10px grid on canvas 'can'
+ */
+var drawBackCanvas = function(can, context) {
+    context.strokeStyle = '#999';
+    for (var i = 0; i < can.height; i += 10) {
+        context.beginPath();
+        context.moveTo(0, i);
+        context.lineTo(can.width, i);
+        context.stroke();
+    }
+    for (var i = 0; i < can.width; i += 10) {
+        context.beginPath();
+        context.moveTo(i, 0);
+        context.lineTo(i, can.height);
+        context.stroke();
+    }
+}
+
+/* ================================================================================================================================================== */
+
+/* ****************
+ * Loading the page
+ * ****************/
+var mousePos; 
+canvas.addEventListener('mousemove', function(evt) {
+        mousePos = getMousePos(canvas, evt);
+        currState();
+    }, false);
+canvas.addEventListener('mousedown', function(evt) {
+        mousePos = getMousePos(canvas, evt);
+        dispatch(evt);
+        currState();
+    }, false);
+
+/**
+    Fills the select list of materials
+ */
+materials.forEach(function(e) {
+    var opt = document.createElement("option");
+    var text = document.createTextNode(e);
+    opt.append(text);
+    select.append(opt);
+});
+
+//Draws the grid
+drawBackCanvas(back, ctxBack);
