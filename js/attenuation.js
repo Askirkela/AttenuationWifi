@@ -291,16 +291,16 @@ var drawBackCanvas = () => {
 
 /* ================================================================================================================================================== */
 
-/*var setCookie = (cname, cvalue, exdays) => {
+var setCookie = (cname, cvalue, exdays) => {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    Document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     console.log("Setting cookie : " + cname + "=" + cvalue + ";" + expires + ";path=/");
 };
 var getCookie = (cname) => {
     var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
+    var decodedCookie = decodeURIComponent(Document.cookie);
     var ca = decodedCookie.split(';');
     for(var i = 0; i <ca.length; i++) {
         var c = ca[i];
@@ -317,7 +317,17 @@ var isDark = () => {
     console.log('Checking cookie "Dark"');
     var dark = getCookie("dark");
     console.log("Dark : " + dark);
-    if (dark) {
-        $('body').toggleClass('dark');
+    if (dark == 1) {
+    	$('body').toggleClass('dark');
     }
-};*/
+};
+var goDark = () => {
+    if (!$('body').hasClass('dark')) {
+        $('body').addClass('dark');
+        setCookie('dark', 1, 365);
+        console.log('document.cookie : ' + Document.cookie);
+    } else {
+        $('body').removeClass('dark');
+        setCookie('dark', '', -1);
+    }
+};
