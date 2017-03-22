@@ -78,7 +78,7 @@ const tools = ["sourceLow", "sourceHigh", "receptor", "wall", "none"];
 var currentTool = "none";
 var existingsrc = false;
 var srcStrength = 20;
-var srcSig = [2.4, 5.8];
+var srcFreq = 0;
 var src = {x: -1, y: -1};
 var receptor = [];
 var currentMaterial;

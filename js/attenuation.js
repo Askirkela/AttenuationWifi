@@ -25,6 +25,10 @@ var placeSource = (x, y) => {
 		src.y = y;
 		existingsrc = true;
         drawSource(x, y);
+        if (currentTool === tools[0])
+            srcFreq = 2.4;
+        else
+            srcFreq = 5.8;
         resetTool();
 	}
 };
@@ -123,6 +127,7 @@ var removeSource = () => {
         ctx.clearRect(src.x, src.y, 10, 20);
         src = {x:-1, y:-1};
         existingsrc = false;
+        srcFreq = 0;
         resetTool();
         currState();
     }
@@ -220,7 +225,6 @@ var dispatch = (evt) => {
     }
 };
 
-
 /**
  * In-page debug
  */
@@ -240,6 +244,30 @@ var currState = () => {
     inforeceptorpos.innerText = JSON.stringify(receptor);
     infomousepos.innerText = JSON.stringify(mousePos);
     infoWalls.innerText = JSON.stringify(walls);
+
+    var debugAtn = $('#sigatn')[0];
+    var debugstr = $('#sigstr')[0];
+    removeChildren(debugAtn);
+    removeChildren(debugstr);
+
+    receptor.map((i, index) => {
+        var div = $('<div />', {
+            class: 'col-md-4',
+            text: "Receptor "+ (index+1) + " : " + getTotalAttenuation(srcFreq, getDistance(src, i), []) //TODO: add the materials here
+        });
+        div.appendTo(debugAtn);
+        div = $('<div />', {
+            class: 'col-md-4',
+            text: "Receptor "+ (index+1) + " : " + getSignalStrength(srcFreq, getDistance(src, i), []) //TODO: add the materials here
+        });
+        div.appendTo(debugstr);
+    });
+};
+
+var removeChildren = (e) => {
+    while (e.lastChild) {
+        e.removeChild(e.lastChild);
+    }
 };
 
 /**
