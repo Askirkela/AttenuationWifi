@@ -23,9 +23,6 @@ canvas {
 }
 /* A voir */
 .dark {
-	background-color: rgb(38, 38, 38);
+	background-color: #333;
 	color: lightgrey;
-}
-canvas .dark {
-	background-color: white;
 }

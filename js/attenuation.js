@@ -1,7 +1,7 @@
 /**
  * Selects the apropriate tool
  */
-var selectTool = function(toolIndex) {
+var selectTool = (toolIndex) => {
     resetTool();
     currentMaterial = "";
     try {
@@ -19,7 +19,7 @@ var selectTool = function(toolIndex) {
 /**
  * Places the source on the canvas
  */
-var placeSource = function(x, y) {
+var placeSource = (x, y) => {
 	if (!existingsrc && (currentTool === tools[0] || currentTool === tools[1])) {
 		src.x = x;
 		src.y = y;
@@ -32,10 +32,12 @@ var placeSource = function(x, y) {
 /**
  * Places the receptor on the canvas
  */
-var placeReceptor = function(x, y) {
+var placeReceptor = (x, y) => {
 	if(currentTool === tools[2]) {
         receptor.push({"x":x, "y":y});
         drawReceptor(x, y);
+        //Text adjustment
+        writeMessage(canvas, receptor.length, x-2, y+17);
         resetTool();
 	}
 };
@@ -43,32 +45,15 @@ var placeReceptor = function(x, y) {
 /** 
  * Draws a rectangle with the right material
  */
-var placeWall = function(x, y, u, v) {
+var placeWall = (x, y, u, v) => {
 	if(currentTool === tools[3]) {
         var mat = select.selectedIndex;
         console.log("Selected Material : " + materials[mat]);
         var materialName = materials[mat];
-        ctx.beginPath();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = materialsColors[materialName];
-        ctx.moveTo(x, y);
-        ctx.lineTo(x, u);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(u, y);
-        ctx.lineTo(u, v);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(x, v);
-        ctx.lineTo(u, v);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x, v);
-        ctx.stroke();
+        ctxWalls.lineWidth = 5;
+        ctxWalls.strokeStyle = materialsProperties[materialName].color;
+        drawSquare2(x, y, u, v);
+        walls.push({'x': x, 'y': y, 'u': u, 'v': v, 'color': materialsProperties[materialName].color});
 	}
 };
 
@@ -77,7 +62,7 @@ var placeWall = function(x, y, u, v) {
 /**
  * Calculates the distance between source and receptor
  */
-var getDistance = function(src, receptor) {
+var getDistance = (src, receptor) => {
 	return Math.sqrt(Math.pow(src.x - src.y, 2) + Math.pow(receptor.x - receptor.y, 2));
 };
 
@@ -85,29 +70,29 @@ var getDistance = function(src, receptor) {
  * Calculates the signal's attenuation from source to receptor in the air
  * Atténuation = 92,45+20*LOG10(Freq en GHz)+20*LOG10(Dist en km)
  */
-var getAirAttenuation = function(freq, distance) {
+var getAirAttenuation = (freq, distance) => {
 	return Math.floor(92.45+20*Math.log10(freq)+20*Math.log10(distance/1000));
 };
 
 /**
  * Sums the signal attenuation from crossing materials
  */
-var getMaterialsAttenuation = function(freq, mat) {
+var getMaterialsAttenuation = (freq, mat) => {
     var sum = 0;
-    mat.forEach(function(e) {
-        sum += materialsAttenuation[e][freq];
+    mat.forEach((e) => {
+        sum += materialsProperties[e].att[freq];
     });
     return sum;
 };
 
-var getTotalAttenuation = function(freq, dist, mat) {
+var getTotalAttenuation = (freq, dist, mat) => {
     return srcStrength - getAirAttenuation(freq, dist) - getMaterialsAttenuation(freq, mat);
 };
 
 /**
  * Returns a quality value for the signal
  */
-var getSignalStrength = function(freq, dist, mat) {
+var getSignalStrength = (freq, dist, mat) => {
     var attenuation = getTotalAttenuation(freq, dist, mat);
 	if (attenuation > -77) {
 		return "Excellent";
@@ -128,16 +113,12 @@ var getSignalStrength = function(freq, dist, mat) {
 /**
  * Draws the source on canvas
  */
-var drawSource = function(x, y) {
-    drawSquare(x, y, "blue");
-};
-
-
+var drawSource = (x, y) => { drawSquare(x, y, "blue"); };
 
 /* ******************
  * Remove X functions
  * ******************/
-var removeSource = function() {
+var removeSource = () => {
     if (existingsrc) {
         ctx.clearRect(src.x, src.y, 10, 20);
         src = {x:-1, y:-1};
@@ -147,29 +128,25 @@ var removeSource = function() {
     }
 };
 
-var removeReceptor = function() {
+var removeReceptor = () => {
     if (receptor) {
-        receptor.forEach(function(e) {
-            ctx.clearRect(e.x, e.y, 10, 20);
-        });
-        ctx.clearRect(receptor.x, receptor.y, 10, 20);
+        receptor.forEach((e) => { ctx.clearRect(e.x, e.y, 10, 20); });
         receptor = [];
         resetTool();
         currState();    
     }
 };
 
-var removeWalls = function() {
-
-}
-
-
-
-var drawReceptor = function(x, y) {
-    drawSquare(x, y, "green");
+var removeWalls = () => {
+    ctxWalls.clearRect(0, 0, canvas.width, canvas.height);
+    walls = [];
+    resetTool();
+    currState(); 
 };
 
-var getMousePos = function(canvas, evt) {
+var drawReceptor = (x, y) => { drawSquare(x, y, "green"); };
+
+var getMousePos = (canvas, evt) => {
     var rect = canvas.getBoundingClientRect();
     return {
       x: (evt.clientX - rect.left) - (evt.clientX - rect.left) % 10,
@@ -177,19 +154,41 @@ var getMousePos = function(canvas, evt) {
    	};
 };
 
-var writeMessage = function(canvas, message, x, y) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+var writeMessage = (canvas, message, x, y) => {
+    /*ctx.clearRect(0, 0, canvas.width, canvas.height);*/
     ctx.font = '18pt Calibri';
     ctx.fillStyle = 'black';
     ctx.fillText(message, x, y);
 };
 
-var drawSquare = function(x, y, color) {
+var drawSquare = (x, y, color) => {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, 10, 20);
 };
 
-var clearCanvas = function() {
+var drawSquare2 = (x, y, u, v) => {
+    ctxWalls.beginPath();
+    ctxWalls.moveTo(x, y);
+    ctxWalls.lineTo(u, y);
+    ctxWalls.stroke();
+
+    ctxWalls.beginPath();
+    ctxWalls.moveTo(x, y);
+    ctxWalls.lineTo(x, v);
+    ctxWalls.stroke();
+
+    ctxWalls.beginPath();
+    ctxWalls.moveTo(u, y);
+    ctxWalls.lineTo(u, v);
+    ctxWalls.stroke();
+
+    ctxWalls.beginPath();
+    ctxWalls.moveTo(x, v);
+    ctxWalls.lineTo(u, v);
+    ctxWalls.stroke();
+};
+
+var clearCanvas = () => {
     resetTool();
     removeSource();
     removeReceptor();
@@ -198,13 +197,11 @@ var clearCanvas = function() {
     currState();
 };
 
-var resetTool = function() {
-    currentTool = tools[4];
-};
+var resetTool = () => { currentTool = tools[4]; };
 
 /* ================================================================================================================================================== */
 
-var dispatch = function(evt) {
+var dispatch = (evt) => {
     switch(currentTool) {
         case tools[0]:
             placeSource(mousePos.x, mousePos.y);
@@ -216,13 +213,7 @@ var dispatch = function(evt) {
             placeReceptor(mousePos.x, mousePos.y);
             break;
         case tools[3]:
-            var mouseDownPos = mousePos;
-            canvas.onmouseup = function(e) {
-                var mouseUpPos = getMousePos(canvas, evt);
-                console.log(mouseDownPos);
-                console.log(mouseUpPos);
-                placeWall(mouseDownPos.x, mouseDownPos.y, mouseUpPos.x, mouseUpPos.y);
-            }
+            console.log("Called to place a wall");
             break;
         default:
             break;
@@ -233,13 +224,14 @@ var dispatch = function(evt) {
 /**
  * In-page debug
  */
-var currState = function() {
+var currState = () => {
     var infocurtool = $('#infocurtool')[0];
     var infocurmat = $('#infocurmat')[0];
     var infoexistingsrc = $('#infoexistingsource')[0];
     var infosrcpos = $('#infosourcepos')[0];
     var inforeceptorpos = $('#inforeceptorpos')[0];
     var infomousepos = $('#infomousepos')[0];
+    var infoWalls = $('#infowalls')[0];
 
     infocurtool.innerText = currentTool;
     infocurmat.innerText = currentMaterial;
@@ -247,64 +239,57 @@ var currState = function() {
     infosrcpos.innerText = JSON.stringify(src);
     inforeceptorpos.innerText = JSON.stringify(receptor);
     infomousepos.innerText = JSON.stringify(mousePos);
+    infoWalls.innerText = JSON.stringify(walls);
 };
 
 /**
  * Draws a 10px grid on canvas 'can'
  */
-var drawBackCanvas = function(can, context) {
-    context.strokeStyle = '#999';
-    for (var i = 0; i < can.height; i += 10) {
-        context.beginPath();
-        context.moveTo(0, i);
-        context.lineTo(can.width, i);
-        context.stroke();
+var drawBackCanvas = () => {
+    ctxBack.strokeStyle = '#999';
+    for (var i = 0; i < back.height; i += 10) {
+        ctxBack.beginPath();
+        ctxBack.moveTo(0, i);
+        ctxBack.lineTo(back.width, i);
+        ctxBack.stroke();
     }
-    for (var i = 0; i < can.width; i += 10) {
-        context.beginPath();
-        context.moveTo(i, 0);
-        context.lineTo(i, can.height);
-        context.stroke();
+    for (var i = 0; i < back.width; i += 10) {
+        ctxBack.beginPath();
+        ctxBack.moveTo(i, 0);
+        ctxBack.lineTo(i, back.height);
+        ctxBack.stroke();
     }
 }
 
 /* ================================================================================================================================================== */
 
-/* ****************
- * Loading the page
- * ****************/
-var mousePos; 
-canvas.addEventListener('mousemove', function(evt) {
-        mousePos = getMousePos(canvas, evt);
-        currState();
-    }, false);
-canvas.addEventListener('mousedown', function(evt) {
-        mousePos = getMousePos(canvas, evt);
-        dispatch(evt);
-        currState();
-    }, false);
-
-/**
-    Fills the select list of materials
- */
-materials.forEach(function(e) {
-    var opt = document.createElement("option");
-    var text = document.createTextNode(e);
-    opt.append(text);
-    select.append(opt);
-});
-
-//Draws the grid
-drawBackCanvas(back, ctxBack);
-
-//Fills the legend
-var legend = $('#legend')[0];
-console.log("==== Initializing legend ====");
-$.each(materialsColors, function(key, value) {
-    console.log("key : " + key + ", value : " + value);
-    var div = $('<div />', {
-        class: "col-md-2",
-        style: "color:gold;font-weight:bold;background-color:"+value,
-        text: key
-    }).appendTo(legend);
-});
+/*var setCookie = (cname, cvalue, exdays) => {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    console.log("Setting cookie : " + cname + "=" + cvalue + ";" + expires + ";path=/");
+};
+var getCookie = (cname) => {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+};
+var isDark = () => {
+    console.log('Checking cookie "Dark"');
+    var dark = getCookie("dark");
+    console.log("Dark : " + dark);
+    if (dark) {
+        $('body').toggleClass('dark');
+    }
+};*/
