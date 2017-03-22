@@ -23,7 +23,7 @@
 	<![endif]-->
 	
 </head>
-<body>
+<body onload="isDark()">
 	<div class="container-fluid">
 		<div id="ui" class="row">
 			<div class="block col-md-5 col-xs-12" id="source">
@@ -55,26 +55,26 @@
 		<div class="row" id="legend">
 		</div>
 		<div class="row" id="debug">
-			<div class="col-md-6">Source to receptor attenuation : <div class="row" id="sigatn"></div></div>
-			<div class="col-md-6">Source to receptor signal strength : <div class="row" id="sigstr"></div></div>
+			<div class="col-md-6"><b>Source to receptor attenuation :</b> <div class="row" id="sigatn"></div></div>
+			<div class="col-md-6"><b>Source to receptor signal strength :</b> <div class="row" id="sigstr"></div></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4"> Current tool : <span id="infocurtool"></span></div>
-			<div class="col-md-4"> Current material : <span id="infocurmat"></span></div>
-			<div class="col-md-4"> Existing source : <span id="infoexistingsource"></span></div>
+			<div class="col-md-4"> <b>Current tool :</b> <span id="infocurtool"></span></div>
+			<div class="col-md-4"> <b>Current material :</b> <span id="infocurmat"></span></div>
+			<div class="col-md-4"> <b>Existing source :</b> <span id="infoexistingsource"></span></div>
 		</div>
 		<div class="row">
-			<div class="col-md-12"> Walls : <span id="infowalls"></span></div>
+			<div class="col-md-12"> <b>Walls :</b> <span id="infowalls"></span></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4"> Source position : <span id="infosourcepos"></span></div>
-			<div class="col-md-4"> Receptor position : <span id="inforeceptorpos"></span></div>
-			<div class="col-md-4"> Mouse position : <span id="infomousepos"></span></div>
+			<div class="col-md-4"> <b>Source position :</b> <span id="infosourcepos"></span></div>
+			<div class="col-md-4"> <b>Receptor position :</b> <span id="inforeceptorpos"></span></div>
+			<div class="col-md-4"> <b>Mouse position :</b> <span id="infomousepos"></span></div>
 		</div>
 		
 		<!-- A voir -->
 		<div id="dark" class="row">
-			<button id="darkbutton" class="col-md-2 btn btn-default ui-button" onclick="$('body').toggleClass('dark')">Change theme</button>
+			<button id="darkbutton" class="col-md-2 btn btn-default ui-button" onclick="goDark();">Change theme</button>
 		</div>
 	</div>
 	<script type="text/javascript" src="js/variables.js"></script>
