@@ -98,21 +98,55 @@ var getTotalAttenuation = (freq, dist, mat) => {
 /**
  * Returns a quality value for the signal
  */
-var getSignalStrength = (freq, dist, mat) => {
-    var attenuation = getTotalAttenuation(freq, dist, mat);
+var getSignalStrength = (freq, source, receptor) => {
+    var attenuation = getTotalAttenuation(freq, getDistance(source, receptor), getPassedMaterials(source, receptor));
 	if (attenuation > -77) {
 		return "Excellent";
-	}
-	if (attenuation < -78 && attenuation > -86) {
+	} else if (attenuation > -86) {
 		return "Good";
-	}
-	if (attenuation < -87 && attenuation > -92) {
+	} else if (attenuation > -92) {
 		return "Weak";
-	}
-	else {
+	} else {
 		return "None";
 	}
 };
+
+var getPassedMaterials = (source, receptor) => {
+    var passed = [];
+    
+    var x0 = source.x;
+    var y0 = source.y;
+    var x1 = receptor.x;
+    var y1 = receptor.y;
+    var dx = Math.abs(x1-x0);
+    var dy = Math.abs(y1-y0);
+    //Two pixels step (Walls are 5 pixels wide)
+    var sx = (x0 < x1) ? 2 : -2;
+    var sy = (y0 < y1) ? 2 : -2;
+    var err = dx-dy;
+
+    while(x0 != x1 || y0 != y1){
+        var pixel = ctxWalls.getImageData(x0, y0, 1, 1).data;
+        var hex = '#' + ('000000' + rgbToHex(pixel[0], pixel[1], pixel[2])).slice(-6);
+        for(var k in materialsProperties) {
+            if (hex === materialsProperties[k].color) {
+                passed.push(k);
+            }
+        }
+        var e2 = 2*err;
+        if (e2 >-dy){ err -= dy; x0  += sx; }
+        if (e2 < dx){ err += dx; y0  += sy; }
+    }
+    
+    //Filtering to remove doublons
+    return passed.filter((el, index) => { return index % 2 === 0; });
+}
+
+var rgbToHex = (r, g, b) => {
+    if (r > 255 || g > 255 || b > 255)
+        throw 'Invalid color component';
+    return ((r << 16) | (g << 8) | b).toString(16);
+}
 
 /* ================================================================================================================================================== */
 
@@ -255,12 +289,12 @@ var currState = () => {
     receptor.map((i, index) => {
         var div = $('<div />', {
             class: 'col-md-4',
-            text: "Receptor "+ (index+1) + " : " + getTotalAttenuation(srcFreq, getDistance(src, i), []) //TODO: add the materials here
+            text: "Receptor "+ (index+1) + " : " + getTotalAttenuation(srcFreq, getDistance(src, i), getPassedMaterials(src, i))
         });
         div.appendTo(debugAtn);
         div = $('<div />', {
             class: 'col-md-4',
-            text: "Receptor "+ (index+1) + " : " + getSignalStrength(srcFreq, getDistance(src, i), []) //TODO: add the materials here
+            text: "Receptor "+ (index+1) + " : " + getSignalStrength(srcFreq, src, i)
         });
         div.appendTo(debugstr);
     });
