@@ -54,27 +54,31 @@
 		</div>
 		<div class="row" id="legend">
 		</div>
-		<div class="row" id="debug">
+		<div class="row">
 			<div class="col-md-6"><b>Source to receptor attenuation :</b> <div class="row" id="sigatn"></div></div>
 			<div class="col-md-6"><b>Source to receptor signal strength :</b> <div class="row" id="sigstr"></div></div>
 		</div>
-		<div class="row">
-			<div class="col-md-4"> <b>Current tool :</b> <span id="infocurtool"></span></div>
-			<div class="col-md-4"> <b>Current material :</b> <span id="infocurmat"></span></div>
-			<div class="col-md-4"> <b>Existing source :</b> <span id="infoexistingsource"></span></div>
+		<div id="debug">
+			<div class="row">
+				<div class="col-md-4"> <b>Current tool :</b> <span id="infocurtool"></span></div>
+				<div class="col-md-4"> <b>Current material :</b> <span id="infocurmat"></span></div>
+				<div class="col-md-4"> <b>Existing source :</b> <span id="infoexistingsource"></span></div>
+			</div>
+			<div class="row">
+				<div class="col-md-12"> <b>Walls :</b> <span id="infowalls"></span></div>
+			</div>
+			<div class="row">
+				<div class="col-md-4"> <b>Source position :</b> <span id="infosourcepos"></span></div>
+				<div class="col-md-4"> <b>Receptor position :</b> <span id="inforeceptorpos"></span></div>
+				<div class="col-md-4"> <b>Mouse position :</b> <span id="infomousepos"></span></div>
+			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12"> <b>Walls :</b> <span id="infowalls"></span></div>
-		</div>
-		<div class="row">
-			<div class="col-md-4"> <b>Source position :</b> <span id="infosourcepos"></span></div>
-			<div class="col-md-4"> <b>Receptor position :</b> <span id="inforeceptorpos"></span></div>
-			<div class="col-md-4"> <b>Mouse position :</b> <span id="infomousepos"></span></div>
-		</div>
-		
 		<!-- A voir -->
-		<div id="dark" class="row">
-			<button id="darkbutton" class="col-md-2 btn btn-default ui-button" onclick="goDark();">Change theme</button>
+		<div class="row">
+			<div class="block col-md-5 col-xs-12">
+				<button id="darkbutton" class="btn btn-default ui-button" onclick="goDark();">Change theme</button>
+				<button id="showdebug" class="btn btn-default ui-button" onclick="showDebug();">Show debug</button>
+			</div>
 		</div>
 	</div>
 	<script type="text/javascript" src="js/variables.js"></script>

@@ -46,3 +46,5 @@ for(e in materialsProperties) {
     });
     div.appendTo(legend);
 };
+
+$('#debug').toggle();
