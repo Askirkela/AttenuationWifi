@@ -84,6 +84,8 @@ var getAirAttenuation = (freq, distance) => {
  * Sums the signal attenuation from crossing materials
  */
 var getMaterialsAttenuation = (freq, mat) => {
+    if (!mat) return 0;
+    
     var sum = 0;
     mat.forEach((e) => {
         sum += freq == 'low' ? materialsProperties[e].low : materialsProperties[e].high;
