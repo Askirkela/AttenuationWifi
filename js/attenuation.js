@@ -68,7 +68,7 @@ var placeWall = (x, y, u, v) => {
  * Calculates the distance between source and receptor
  */
 var getDistance = (src, receptor) => {
-	return Math.sqrt(Math.pow(src.x - src.y, 2) + Math.pow(receptor.x - receptor.y, 2));
+	return Math.abs(Math.sqrt(Math.pow(src.x - src.y, 2) + Math.pow(receptor.x - receptor.y, 2)));
 };
 
 /**
