@@ -25,10 +25,11 @@ var placeSource = (x, y) => {
 		src.y = y;
 		existingsrc = true;
         drawSource(x, y);
+        writeMessage(canvas, 'S', x-1, y+17);
         if (currentTool === tools[0])
-            srcFreq = 2.4;
+            srcFreq = 'low';
         else
-            srcFreq = 5.8;
+            srcFreq = 'high';
         resetTool();
 	}
 };
@@ -75,7 +76,8 @@ var getDistance = (src, receptor) => {
  * Atténuation = 92,45+20*LOG10(Freq en GHz)+20*LOG10(Dist en km)
  */
 var getAirAttenuation = (freq, distance) => {
-	return Math.floor(92.45+20*Math.log10(freq)+20*Math.log10(distance/1000));
+    var f = freq == 'low' ? 2.4 : 5.8;
+	return Math.floor(92.45+20*Math.log10(f)+20*Math.log10(distance/1000));
 };
 
 /**
@@ -84,7 +86,7 @@ var getAirAttenuation = (freq, distance) => {
 var getMaterialsAttenuation = (freq, mat) => {
     var sum = 0;
     mat.forEach((e) => {
-        sum += materialsProperties[e].att[freq];
+        sum += freq == 'low' ? materialsProperties[e].low : materialsProperties[e].high;
     });
     return sum;
 };
@@ -127,7 +129,7 @@ var removeSource = () => {
         ctx.clearRect(src.x, src.y, 10, 20);
         src = {x:-1, y:-1};
         existingsrc = false;
-        srcFreq = 0;
+        srcFreq = '';
         resetTool();
         currState();
     }
