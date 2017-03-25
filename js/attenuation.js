@@ -311,16 +311,16 @@ var removeChildren = (e) => {
  */
 var drawBackCanvas = () => {
     ctxBack.strokeStyle = '#999';
-    for (var i = 0; i < back.height; i += 10) {
+    for (var i = 0; i < backCanvas.height; i += 10) {
         ctxBack.beginPath();
         ctxBack.moveTo(0, i);
-        ctxBack.lineTo(back.width, i);
+        ctxBack.lineTo(backCanvas.width, i);
         ctxBack.stroke();
     }
-    for (var i = 0; i < back.width; i += 10) {
+    for (var i = 0; i < backCanvas.width; i += 10) {
         ctxBack.beginPath();
         ctxBack.moveTo(i, 0);
-        ctxBack.lineTo(i, back.height);
+        ctxBack.lineTo(i, backCanvas.height);
         ctxBack.stroke();
     }
 }
