@@ -101,6 +101,7 @@ var getTotalAttenuation = (freq, dist, mat) => {
  * Returns a quality value for the signal
  */
 var getSignalStrength = (freq, source, receptor) => {
+    if (!existingsrc) return "No source";
     var attenuation = getTotalAttenuation(freq, getDistance(source, receptor), getPassedMaterials(source, receptor));
 	if (attenuation > -77) {
 		return "Excellent";
@@ -115,7 +116,8 @@ var getSignalStrength = (freq, source, receptor) => {
 
 var getPassedMaterials = (source, receptor) => {
     var passed = [];
-    
+    if (!existingsrc) return passed;
+
     var x0 = source.x;
     var y0 = source.y;
     var x1 = receptor.x;
